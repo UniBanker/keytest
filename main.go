@@ -12,18 +12,28 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func connect() {
+func balanceIsZero(client *ethclient.Client, address string) bool {
+	addy := common.HexToAddress(address)
+
+	bigIntBal, err := client.BalanceAt(context.Background(), addy, nil)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	fmt.Println("Balance: ", bigIntBal)
+	return bigIntBal.Int64() == 0
+}
+
+func openGethClient() *ethclient.Client {
 	url := "https://eth.etherblue.org"
 	client, err := ethclient.Dial(url)
 	if err != nil {
 		fmt.Println("Failed to dial, url: ", url, ", err: ", err)
-		return
+		return nil
 	}
 	fmt.Println("Connected to eth.etherblue.org")
-
-	address := common.StringToAddress("0xa8b8d9b1425ad962dce1b9606af606b6fd490037")
-
-	client.BalanceAt(context.Background(), address, nil)
+	return client
 }
 
 func main() {
@@ -45,5 +55,8 @@ func main() {
 	fmt.Println("Private Key: ", privateKey)
 	fmt.Println("Public Key: ", address)
 
-	connect()
+	client := openGethClient()
+
+	balZero := balanceIsZero(client, "0xA8b8d9B1425aD962dce1b9606AF606B6Fd490037")
+	fmt.Println("Balance zero: ", balZero)
 }
