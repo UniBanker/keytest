@@ -7,14 +7,14 @@ import (
 	"crypto/rand"
 	"fmt"
 
-	"github.com/ethereum/eth-client/client"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 func connect() {
 	url := "https://eth.etherblue.org"
-	client, err := client.Dial(url)
+	client, err := ethclient.Dial(url)
 	if err != nil {
 		fmt.Println("Failed to dial, url: ", url, ", err: ", err)
 		return
